@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
@@ -15,6 +16,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -37,16 +40,34 @@ public class LoginActivity extends AppCompatActivity {
     private Button mCheckButton;
     private String mDeviceID, mDeviceKey;
     private NotificationCompat.Builder mBuilder;
+    private LinearLayout mLoginLayout;
+    private TextView mEmptyView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         initialize();
 
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        mDeviceIdEt.setText(settings.getString("ID", null));
-        mDeviceKeyEt.setText(settings.getString("KEY", null));
+        try{
+            mDeviceIdEt.setText(settings.getString("ID", null));
+            mDeviceKeyEt.setText(settings.getString("KEY", null));
+        }catch (NullPointerException e){
+            mDeviceKeyEt.setText("");
+            mDeviceIdEt.setText("");
+        }
+
+        if(isNetworkConnected()){
+            mLoginLayout.setVisibility(View.VISIBLE);
+            mEmptyView.setVisibility(View.GONE);
+        }else{
+            mLoginLayout.setVisibility(View.GONE);
+            mEmptyView.setVisibility(View.VISIBLE);
+        }
+
+
 
     }
 
@@ -54,6 +75,8 @@ public class LoginActivity extends AppCompatActivity {
         mDeviceIdEt = findViewById(R.id.device_id);
         mDeviceKeyEt = findViewById(R.id.device_key);
         mCheckButton = findViewById(R.id.check);
+        mLoginLayout = findViewById(R.id.login_layout);
+        mEmptyView = findViewById(R.id.check_internet_tv);
 
         mCheckButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,6 +199,12 @@ public class LoginActivity extends AppCompatActivity {
             return  output.toString();
         }
 
+    }
+
+    public boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null;
     }
 
 }

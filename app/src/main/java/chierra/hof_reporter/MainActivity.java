@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     fragment = new HomeFragment();
+                    fragment.setArguments(mUserBundle);
                     loadFragment(fragment);
                     toolbar.setTitle(R.string.title_home);
                     return true;

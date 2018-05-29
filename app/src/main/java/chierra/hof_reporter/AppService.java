@@ -100,7 +100,7 @@ public class AppService extends Service {
             DetectData detectData = getJsonData();
             if(detectData!=null){
                 if(detectData.getmStatus().toLowerCase().equals("ada api")){
-                    fireNotification();
+                    fireNotification(detectData.getmTime());
                 }else{
                 }
             }
@@ -173,12 +173,12 @@ public class AppService extends Service {
         return data;
     }
 
-    private void fireNotification(){
+    private void fireNotification(String time){
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.fire)
-                        .setContentTitle("Notifications Example")
-                        .setContentText("This is a test notification");
+                        .setContentTitle("TERDETEKSI API")
+                        .setContentText(time);
         builder.setVibrate(new long []{500,500});
         builder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
 

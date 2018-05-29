@@ -6,20 +6,38 @@
     android:layout_height="match_parent"
     android:background="@drawable/login_bg"
     tools:context="chierra.hof_reporter.LoginActivity"
-    android:gravity="center">
+    >
 
+    <TextView
+        android:id="@+id/check_internet_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:text="Check Your Internet Connection" />
 
     <LinearLayout
+        android:id="@+id/login_layout"
         android:layout_width="wrap_content"
         android:orientation="vertical"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:gravity="center">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Silahkan Ketik :  \n - ID Perangkat\n - Kunci Perangkat \n Yang terdapat pada perangkat anda"
+            android:textSize="14sp"
+            android:layout_gravity="left"
+            android:textColor="@color/white"
+            />
         <ImageView
-            android:layout_margin="32dp"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            app:srcCompat="@drawable/ic_person_24dp"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/hof_device_id_key"/>
+
 
         <EditText
             android:id="@+id/device_id"
@@ -35,12 +53,12 @@
             android:id="@+id/device_key"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
+            android:hint="Kunci Perangkat"
+            android:imeOptions="actionDone"
             android:inputType="text"
             android:singleLine="true"
-            android:imeOptions="actionDone"
             android:textColor="@color/white"
-            android:textColorHint="@color/white"
-            android:hint="Kunci Perangkat"/>
+            android:textColorHint="@color/white" />
 
         <Button
             android:id="@+id/check"
@@ -51,6 +69,10 @@
             android:textColor="@color/white" />
 
 
+
+
     </LinearLayout>
+
+
 
 </RelativeLayout>

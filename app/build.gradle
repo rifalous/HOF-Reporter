@@ -20,6 +20,8 @@ android {
 }
 
 dependencies {
+    //noinspection GradleCompatible
+    implementation 'com.google.firebase:firebase-core:11.0.4'
     compile 'com.google.android.gms:play-services-maps:11.0.4'
     compile 'com.google.android.gms:play-services-places:11.0.4'
     implementation fileTree(dir: 'libs', include: ['*.jar'])

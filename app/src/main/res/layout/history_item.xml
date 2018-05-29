@@ -9,12 +9,15 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_weight="2">
-        <ImageView
-            android:layout_marginRight="8dp"
-            android:layout_width="100dp"
-            android:layout_height="80dp"
-            android:src="@drawable/fire"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="17sp"
+            android:text="Terdeteksi Api"/>
         <TextView
             android:id="@id/time"
             android:layout_width="match_parent"

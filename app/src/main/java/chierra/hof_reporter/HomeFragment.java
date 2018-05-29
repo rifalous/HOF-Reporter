@@ -11,12 +11,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -24,12 +27,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 
@@ -42,22 +49,26 @@ import java.util.ArrayList;
 public class HomeFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-    private TextView mLastUpdated;
+    private static final String ARG_PARAM1 = "ID";
+    private static final String ARG_PARAM2 = "KEY";
+    private TextView mLastUpdated, mEmptyText;
     private ImageView mFireIcon;
+    private String device_id, device_key;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private String mLastTime;
     private String mJsonData = "";
+    private LinearLayout mHomeLayout, mEmptyLayout;
+    private ImageView mDeviceStatusIV;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            device_id = getArguments().getString(ARG_PARAM1);
+            device_key = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -68,14 +79,17 @@ public class HomeFragment extends Fragment {
 
         mFireIcon = view.findViewById(R.id.fire_symbol);
         mLastUpdated = view.findViewById(R.id.last_update_time);
+        mDeviceStatusIV = view.findViewById(R.id.device_status);
+        mEmptyLayout = view.findViewById(R.id.empty_layout);
+        mHomeLayout = view.findViewById(R.id.home_layout);
+        mEmptyText = view.findViewById(R.id.empty_text);
 
         final Handler refreshHandler = new Handler();
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 startAsync();
-                refreshHandler.postDelayed(this, 2000);
-                Log.d("ulang", "ulangulang");
+                refreshHandler.postDelayed(this, 4000);
             }
         };
         refreshHandler.postDelayed(runnable,1000);
@@ -136,38 +150,69 @@ public class HomeFragment extends Fragment {
         @Override
         protected void onPostExecute(String strings) {
             DetectData detectData = getJsonData();
-            if(detectData!=null){
-                mLastUpdated.setText(detectData.getmTime());
-                if(detectData.getmStatus().toLowerCase().equals("ada api")){
-                    mFireIcon.setImageResource(R.drawable.fire);
-                    fireNotification();
-                }else{
-                    mFireIcon.setImageResource(R.drawable.no_fire);
+            Log.d("server_response", strings);
+            if(strings.toLowerCase().equals("no results found")){
+                mEmptyText.setVisibility(View.VISIBLE);
+                mHomeLayout.setVisibility(View.GONE);
+                mEmptyLayout.setVisibility(View.VISIBLE);
+            }else{
+                mEmptyText.setVisibility(View.GONE);
+                mEmptyLayout.setVisibility(View.GONE);
+                mHomeLayout.setVisibility(View.VISIBLE);
+                if(detectData!=null){
+                    try{
+                        if(mLastTime.equals(null)){
+                            mLastTime = detectData.getmTime();
+                        }
+                    }catch (NullPointerException e){
+                        mLastTime = detectData.getmTime();
+                    }
+
+                    mLastUpdated.setText(detectData.getmTime());
+                    Log.d("mlasttime", mLastTime + " == " + detectData.getmTime());
+                    if(mLastTime.equals(detectData.getmTime())){
+                        mDeviceStatusIV.setImageResource(R.drawable.hof_device_off);
+                    }else{
+                        mDeviceStatusIV.setImageResource(R.drawable.hof_device_on);
+                        if(detectData.getmStatus().toLowerCase().equals("ada api")){
+                            mFireIcon.setImageResource(R.drawable.fire);
+                        }else{
+                            mFireIcon.setImageResource(R.drawable.no_fire);
+                        }
+                    }
+                    mLastTime = detectData.getmTime();
                 }
             }
         }
 
         private String makeHttpRequest (URL url) throws IOException{
             String jsonResponse = "";
-            HttpURLConnection urlConnection = null;
-            InputStream inputStream = null;
             try{
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.setReadTimeout(10000);
-                urlConnection.setConnectTimeout(15000);
-                urlConnection.connect();
-                inputStream = urlConnection.getInputStream();
-                jsonResponse = readFromStream(inputStream);
-            }catch (IOException e){
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
 
-            } finally {
-                if (urlConnection != null){
-                    urlConnection.disconnect();
-                }
-                if(inputStream != null){
-                    inputStream.close();
-                }
+                String data = URLEncoder.encode("device_id", "UTF-8")
+                        + "=" + URLEncoder.encode(device_id, "UTF-8");
+
+                bufferedWriter.write(data);
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                outputStream.close();
+                InputStream inputStream = httpURLConnection.getInputStream();
+                jsonResponse = readFromStream(inputStream);
+                Log.d("resp", jsonResponse);
+                inputStream.close();
+                httpURLConnection.disconnect();
+                return jsonResponse;
+
+
+            }catch (MalformedURLException e){
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
             return jsonResponse;
         }
