@@ -99,7 +99,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     class UserDataAsyncTask extends AsyncTask<URL,Void,String> {
-        String BASE_URL="http://cerebrum.id/project/login_android.php";
+        String BASE_URL="http://cerebrum.id/project/login_android2.php";
         ProgressDialog dialog = new ProgressDialog(LoginActivity.this);
 
         @Override
@@ -139,7 +139,14 @@ public class LoginActivity extends AppCompatActivity {
                 tempIntent.putExtra("ID", mDeviceID);
                 tempIntent.putExtra("KEY", mDeviceKey);
                 startActivity(tempIntent);
-            }else{
+            }else if(strings.toLowerCase().equals("empty")){
+                savePreferences(mDeviceID,mDeviceKey);
+                Intent tempIntent = new Intent(LoginActivity.this, DataFormActivity.class);
+                tempIntent.putExtra("ID", mDeviceID);
+                tempIntent.putExtra("KEY", mDeviceKey);
+                startActivity(tempIntent);
+            }
+            else{
                 Toast.makeText(getApplicationContext(),strings, Toast.LENGTH_SHORT).show();
             }
 

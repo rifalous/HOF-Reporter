@@ -17,11 +17,13 @@
 
         <TextView
             android:id="@+id/empty_text"
+            android:layout_marginBottom="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:gravity="center"
             android:visibility="gone"
-            android:text="No Result Found"/>
+            android:text="Data Tidak Ditemukan\nTolong Aktifkan perangkat anda"/>
 
         <ProgressBar
             android:layout_width="wrap_content"

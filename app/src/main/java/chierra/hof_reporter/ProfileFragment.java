@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -45,7 +46,8 @@ public class ProfileFragment extends Fragment {
     private Button mProfileSetting;
     private TextView mUserIdTv, mUserNameTv, mUserAddressTv, mUserPhoneTv;
     private String mJsonData = "";
-    private String device_id, device_key;
+    private String device_id, device_key, nama, telp, alamat;
+    private LinearLayout topLayout, bottomLayout;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -69,16 +71,22 @@ public class ProfileFragment extends Fragment {
         mUserNameTv = view.findViewById(R.id.user_name);
         mUserAddressTv = view.findViewById(R.id.user_address);
         mUserPhoneTv = view.findViewById(R.id.user_phone);
+        bottomLayout = view.findViewById(R.id.bottom_layout);
+        topLayout = view.findViewById(R.id.top_layout);
 
         mProfileSetting = view.findViewById(R.id.edit_profile);
         mProfileSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(),DataFormActivity.class);
+                intent.putExtra("nama", nama);
+                intent.putExtra("telp", telp);
+                intent.putExtra("alamat", alamat);
                 startActivity(intent);
             }
         });
 
+        bottomLayout.setVisibility(View.GONE);
         startAsync();
 
         return view;
@@ -135,8 +143,13 @@ public class ProfileFragment extends Fragment {
 
         @Override
         protected void onPostExecute(String strings) {
+            topLayout.setVisibility(View.GONE);
+            bottomLayout.setVisibility(View.VISIBLE);
             ArrayList<UserProfile> User = getJsonData();
             int size = 0;
+            nama = User.get(size).getmName();
+            alamat = User.get(size).getmAddress();
+            telp = User.get(size).getmPhone();
             mUserIdTv.setText(User.get(size).getmDeviceId());
             mUserNameTv.setText(User.get(size).getmName());
             mUserAddressTv.setText(User.get(size).getmAddress());

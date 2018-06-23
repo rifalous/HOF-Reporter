@@ -5,12 +5,42 @@
     android:layout_height="match_parent"
     tools:context="chierra.hof_reporter.ProfileFragment">
 
+    <LinearLayout
+        android:id="@+id/top_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/empty_text"
+            android:layout_marginBottom="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:visibility="gone"
+            android:text="Data Tidak Ditemukan\nTolong Aktifkan perangkat anda"/>
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminateDrawable="@drawable/progress_bar"
+            />
+
+    </LinearLayout>
+
     <!-- TODO: Update blank fragment layout -->
     <LinearLayout
+        android:id="@+id/bottom_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp"
+        android:visibility="visible"
         android:layout_marginBottom="50dp"
         android:layout_gravity="center">
 
@@ -23,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="User Profile"
+            android:text="Profil Pengguna"
             android:textSize="20sp"/>
         <LinearLayout
             android:layout_width="match_parent"
@@ -38,22 +68,22 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Device ID : "
+                    android:text="ID Perangkat: "
                     android:layout_gravity="right"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Name : "
+                    android:text="Nama : "
                     android:layout_gravity="right"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Address : "
+                    android:text="Alamat : "
                     android:layout_gravity="right"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Phone Number : "
+                    android:text="Nomor Telp. : "
                     android:layout_gravity="right"/>
 
             </LinearLayout>
@@ -72,17 +102,18 @@
                     android:id="@+id/user_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=" Name "/>
+                    android:text=" Nama "/>
                 <TextView
                     android:id="@+id/user_address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=" Address"/>
+                    android:singleLine="true"
+                    android:text=" Alamat"/>
                 <TextView
                     android:id="@+id/user_phone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=" Phone Number"/>
+                    android:text=" Nomor Telp."/>
 
             </LinearLayout>
         </LinearLayout>
@@ -92,7 +123,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Edit"/>
+            android:background="@drawable/button_border"
+            android:textColor="@color/white"
+            android:text="Ubah"/>
     </LinearLayout>
 
 </FrameLayout>

@@ -3,7 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginBottom="?attr/actionBarSize"
+    android:padding="8dp"
     tools:context="chierra.hof_reporter.HistoryFragment">
+
+        <TextView
+            android:id="@+id/empty_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Riwayat Kebakaran Kosong"
+            android:visibility="gone"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_history"

@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -38,7 +39,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.text.Format;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 
 /**
@@ -168,7 +175,21 @@ public class HomeFragment extends Fragment {
                         mLastTime = detectData.getmTime();
                     }
 
-                    mLastUpdated.setText(detectData.getmTime());
+                    Date date = new Date();
+                    String stringDate = null;
+                    Locale indonesia = new Locale("id", "ID", "ID");
+                    Calendar cal = Calendar.getInstance(indonesia);
+
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddhhmmss");
+                    Format formatter = new SimpleDateFormat("EEE, dd/MMMM/yyyy', ' hh:mm", indonesia);
+                    try {
+                        date = dateFormat.parse(detectData.getmTime());
+                        stringDate = formatter.format(date);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    mLastUpdated.setText(stringDate);
                     Log.d("mlasttime", mLastTime + " == " + detectData.getmTime());
                     if(mLastTime.equals(detectData.getmTime())){
                         mDeviceStatusIV.setImageResource(R.drawable.hof_device_off);
@@ -176,6 +197,7 @@ public class HomeFragment extends Fragment {
                         mDeviceStatusIV.setImageResource(R.drawable.hof_device_on);
                         if(detectData.getmStatus().toLowerCase().equals("ada api")){
                             mFireIcon.setImageResource(R.drawable.fire);
+                            fireNotification();
                         }else{
                             mFireIcon.setImageResource(R.drawable.no_fire);
                         }
@@ -262,10 +284,11 @@ public class HomeFragment extends Fragment {
     private void fireNotification(){
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(getActivity())
-                        .setSmallIcon(R.drawable.fire)
-                        .setContentTitle("DIRUMAH ANDA TERDETEKSI API");
-        builder.setVibrate(new long []{500,500});
-        builder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
+                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setContentTitle("ALAT MENDETEKSI API");
+        builder.setVibrate(new long []{100,100});
+        builder.setSound(Settings.System.DEFAULT_RINGTONE_URI);
+        builder.setLargeIcon(BitmapFactory.decodeResource(this.getResources(),R.drawable.ic_launcher));
 
         Intent notificationIntent = new Intent(getActivity(), MainActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(getActivity(), 0, notificationIntent,

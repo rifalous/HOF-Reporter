@@ -37,6 +37,7 @@
             android:inputType="number"
             android:hint="Phone Number"/>
         <LinearLayout
+            android:id="@+id/address_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">

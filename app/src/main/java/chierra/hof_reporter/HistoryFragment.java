@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,6 +44,7 @@ public class HistoryFragment extends Fragment {
     private RecyclerView mRecylerViewHistory;
     private String mJsonData;
     private HistoryAdapter mAdapter;
+    private TextView mEmptyView;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -70,6 +72,7 @@ public class HistoryFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_history, container, false);
 
         mRecylerViewHistory = view.findViewById(R.id.rv_history);
+        mEmptyView = view.findViewById(R.id.empty_view);
         mRecylerViewHistory.setLayoutManager(new LinearLayoutManager(getActivity()));
         startAsync();
 
@@ -129,14 +132,22 @@ public class HistoryFragment extends Fragment {
         @Override
         protected void onPostExecute(String strings) {
             List<DetectData> detectData = getJsonData(strings);
-
             mAdapter = new HistoryAdapter(detectData, getActivity(), new OnClickListener() {
                 @Override
                 public void onItemClick(DetectData item) {
 
                 }
             });
-            mRecylerViewHistory.setAdapter(mAdapter);
+
+            if(mAdapter.getItemCount()==0){
+                mEmptyView.setVisibility(View.VISIBLE);
+                mRecylerViewHistory.setVisibility(View.GONE);
+            }else{
+                mRecylerViewHistory.setVisibility(View.VISIBLE);
+                mEmptyView.setVisibility(View.GONE);
+                mRecylerViewHistory.setAdapter(mAdapter);
+            }
+
         }
 
         private String makeHttpRequest (URL url) throws IOException{

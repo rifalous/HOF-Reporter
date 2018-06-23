@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,25 +38,51 @@ public class DataFormActivity extends AppCompatActivity {
     private EditText mEditTextPhone;
     private ImageView mPlacePicker;
     private GoogleApiClient mGoogleApiClient;
-    private String mLongitude, mLatitude;
+    private String mLongitude;
+    private String mLatitude;
+    private LinearLayout mAddressLayout;
     SharedPreferences settings;
 
 
-    private String id, key, name, phone, address;
+    private String id, key, name, phone, address, nama, telp, alamat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data_form);
 
+        nama = "";
+        telp = "";
+        alamat = "";
+        mLongitude = "";
+        mLatitude = "";
+
+        nama = getIntent().getStringExtra("nama");
+        telp = getIntent().getStringExtra("telp");
+        alamat = getIntent().getStringExtra("alamat");
+
+
         Button button = findViewById(R.id.save);
         settings = getSharedPreferences(LoginActivity.PREFS_NAME, 0);
         mEditTextName = findViewById(R.id.edit_name);
+        mEditTextName.setText(nama);
         mEditTextPhone = findViewById(R.id.edit_phone);
+        mEditTextPhone.setText(telp);
         mEditTextAddress = findViewById(R.id.preview_address);
+        mAddressLayout = findViewById(R.id.address_layout);
+        try{
+            if(alamat.equals(null) || alamat.equals("")){
+
+            }else{
+                mEditTextAddress.setText(alamat);
+            }
+        }catch (NullPointerException e){
+            e.printStackTrace();
+        }
+
         mPlacePicker = findViewById(R.id.pick_location);
 
-        mPlacePicker.setOnClickListener(new View.OnClickListener() {
+        mAddressLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
@@ -82,11 +109,21 @@ public class DataFormActivity extends AppCompatActivity {
         address = mEditTextAddress.getText().toString();
         phone = mEditTextPhone.getText().toString();
 
-        Log.d("haha00", id + " " +  key + " " + name + " " + address + " " + phone);
+            if(mEditTextName.getText().toString().matches("") || mEditTextAddress.getText().toString().matches("") || mEditTextPhone.getText().toString().matches("")){
+                Toast.makeText(this, "Periksa kembali data diri anda", Toast.LENGTH_SHORT).show();
+            }else{
+                if(mLongitude.matches("")||mLatitude.matches("")){
+                    Toast.makeText(this, "Mohon tandai ulang alamat anda", Toast.LENGTH_SHORT).show();
+                }else{
+                    BackgroundTask sendData = new BackgroundTask();
+                    sendData.execute(id, key, name, address, phone);
+                    Intent tempIntent = new Intent(DataFormActivity.this, MainActivity.class);
+                    tempIntent.putExtra("TAG", "home");
+                    startActivity(tempIntent);
+                }
 
-        BackgroundTask sendData = new BackgroundTask();
-        sendData.execute(id, key, name, address, phone);
-        finish();
+            }
+
     }
 
     public void getPreferences(){
@@ -141,6 +178,12 @@ public class DataFormActivity extends AppCompatActivity {
                         + "&" + URLEncoder.encode("address", "UTF-8") + "="
                         + URLEncoder.encode(address, "UTF-8")
 
+                        + "&" + URLEncoder.encode("lng", "UTF-8") + "="
+                        + URLEncoder.encode(mLongitude, "UTF-8")
+
+                        + "&" + URLEncoder.encode("lat", "UTF-8") + "="
+                        + URLEncoder.encode(mLatitude, "UTF-8")
+
                         + "&" + URLEncoder.encode("phone", "UTF-8")
                         + "=" + URLEncoder.encode(phone, "UTF-8");
 
@@ -152,7 +195,7 @@ public class DataFormActivity extends AppCompatActivity {
                 InputStream inputStream = httpURLConnection.getInputStream();
                 inputStream.close();
                 httpURLConnection.disconnect();
-                return "Sukses";
+                return "Sukses Mengubah Profil";
 
 
             }catch (MalformedURLException e){
@@ -195,6 +238,8 @@ public class DataFormActivity extends AppCompatActivity {
                 stBuilder.append("\n");
                 stBuilder.append("Address: ");
                 stBuilder.append(address);
+                mLongitude = longitude;
+                mLatitude = latitude;
                 mEditTextAddress.setText(address);
             }
         }

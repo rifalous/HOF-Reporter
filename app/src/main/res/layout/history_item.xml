@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:textSize="17sp"
+            android:textSize="20sp"
             android:text="Terdeteksi Api"/>
         <TextView
             android:id="@id/time"
@@ -25,7 +25,7 @@
             android:layout_gravity="center"
             android:gravity="center"
             tools:text="13:02:30"
-            android:textSize="20sp"/>
+            android:textSize="16sp"/>
     </LinearLayout>
 
 
