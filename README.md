@@ -1,2 +1,2 @@
 # HOF-Reporter
-Fire Reporter Android App
+House of Fire Reporter is an Android App
